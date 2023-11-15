@@ -2,8 +2,8 @@ namespace DesafioFundamentos.Models
 {
     public class Estacionamento
     {
-        private decimal precoInicial = 0.00M;
-        private decimal precoPorHora = 0.00M;
+        private decimal precoInicial = 0.0M;
+        private decimal precoPorHora = 0.0M;
         private List<string> veiculos = new List<string>();
 
         // Construtor
@@ -18,7 +18,11 @@ namespace DesafioFundamentos.Models
             // Implementado!!!!!
             Console.WriteLine("Digite a placa do veículo para estacionar:");
             string placa = Console.ReadLine();
-            veiculos.Add(placa.ToUpper());
+
+            if (!veiculos.Any(x => x.ToUpper() == placa.ToUpper()))
+                veiculos.Add(placa.ToUpper());
+            else
+                Console.WriteLine("A placa informada já possui um veículo com o cadastrato ativo");
         }
 
         public void RemoverVeiculo()
@@ -59,7 +63,7 @@ namespace DesafioFundamentos.Models
                         // *IMPLEMENTE AQUI* - OK
                         veiculos.Remove(placa);
 
-                        Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal}");
+                        Console.WriteLine($"O veículo {placa} foi removido e o preço total foi de: R$ {valorTotal.ToString("0.00")}");
                     }
                 } while (!validarConversao);
 
@@ -100,6 +104,7 @@ namespace DesafioFundamentos.Models
                 Console.WriteLine($"Digite a \"nova\" placa para o veículo {placa}:");
                 string novaPlaca = Console.ReadLine();
 
+                // Alterando a placa através do índice
                 int index = veiculos.IndexOf(placa);
                 veiculos[index] = novaPlaca;
 
@@ -109,7 +114,82 @@ namespace DesafioFundamentos.Models
             {
                 Console.WriteLine("Desculpe, esse veículo não está estacionado aqui. Confira se digitou a placa corretamente");
             }
-
         }
+
+        // MÉTODOS PARA VALIDAÇÃO DOS VALORES INFORMADOS COMO PREÇO
+
+        // MODELO 1:
+
+        public static string ValidarValorNumerico(string strValor)
+        {
+            decimal decimalValor;
+
+            // Quando fizer o TryParse, se for true é porque o valor é númerico
+            bool isNumber = decimal.TryParse(strValor, System.Globalization.NumberStyles.Any,
+                System.Globalization.NumberFormatInfo.InvariantInfo, out decimalValor);
+
+            if (isNumber)
+            {
+                // Retorna a mesma string, já que ela é true para número
+                // Depois trabalhamos a conversão dessa string para decimal no método específico.
+                return strValor;
+            }
+            else
+            {
+                // Se colocar o Console.WriteLine da erro por conta do tipo de retorno do método
+                // Error #CS0029 "cannot implicitly convert type 'void' to 'string' 
+                return $"O preço {strValor} é inválido!";
+            }
+        }
+
+        public static decimal ConverterParaDecimal(string strValor)
+        {
+            decimal decimalValor;
+
+            // Verifica se a string de valor contém ponto, se for true, substitui o ponto por vírgula
+            if (strValor.Contains("."))
+                strValor = strValor.Replace('.', ',');
+
+            if (decimal.TryParse(strValor, out decimalValor))
+                return decimalValor;
+            else
+                return 0;
+        }
+
+        // MODELO 2
+
+        //public static string ValidarValorNumerico(string strValor)
+        //{
+        //    decimal decimalValor;
+
+        //    // Verifica se a string de valor contém ponto, se for true, substitui o ponto por vírgula
+        //    if (strValor.Contains("."))
+        //        strValor = strValor.Replace('.', ',');
+
+        //    // Quando fizer o TryParse, se for true é porque o valor é númerico
+        //    bool isNumber = decimal.TryParse(strValor, System.Globalization.NumberStyles.Any,
+        //        System.Globalization.NumberFormatInfo.InvariantInfo, out decimalValor);
+
+        //    if (isNumber)
+        //    {
+        //        return strValor;
+        //    }
+        //    else
+        //    {
+        //        // Se colocar o Console.WriteLine da erro por conta do tipo de retorno do método
+        //        // Error #CS0029 "cannot implicitly convert type 'void' to 'string' 
+        //        return $"O preço {strValor} é inválido!";
+        //    }
+        //}
+
+        //public static decimal ConverterParaDecimal(string strValor)
+        //{
+        //    decimal decimalValor;
+
+        //    if (decimal.TryParse(strValor, out decimalValor))
+        //        return decimalValor;
+
+        //    return 0;
+        //}
     }
 }
